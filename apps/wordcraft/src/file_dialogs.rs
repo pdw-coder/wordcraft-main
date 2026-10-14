@@ -14,7 +14,9 @@
 //!
 //! [`Services::file_dialog`]: wordcraft_ui_egui::Services::file_dialog
 
+#[cfg(not(target_os = "android"))]
 use std::future::Future;
+#[cfg(not(target_os = "android"))]
 use std::pin::Pin;
 use std::sync::mpsc::{Receiver, Sender, channel};
 

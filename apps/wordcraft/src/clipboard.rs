@@ -14,6 +14,7 @@
 //! text alternative on every desktop platform; formats of other names (Word's "Office Open XML"
 //! with OMML, #1297) it can't, so they aren't offered.
 
+#[cfg(not(target_os = "android"))]
 use wordcraft_engine::cmd::paste::MAX_PASTE_BYTES;
 use wordcraft_ui_egui::paste_picture::ClipboardPicture;
 

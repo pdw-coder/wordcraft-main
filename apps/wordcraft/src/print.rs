@@ -88,7 +88,10 @@ pub fn submit() -> Submit {
                 std::env::temp_dir().join(&filename)
             };
             let res = std::fs::write(&path, &bytes)
-                .map(|()| log::info!("Print PDF generated at {}", path.display()))
+                .map(|()| {
+                    log::info!("Print PDF generated at {}", path.display());
+                    path.display().to_string()
+                })
                 .map_err(|e| e.to_string());
             let _ = sender.send(res);
         });

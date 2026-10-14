@@ -362,8 +362,9 @@ fn main() -> eframe::Result {
 }
 
 #[cfg(target_os = "android")]
-#[no_mangle]
-fn android_main(app: winit::platform::android::activity::AndroidApp) {
+#[allow(unsafe_code)]
+#[unsafe(no_mangle)]
+pub fn android_main(app: winit::platform::android::activity::AndroidApp) {
     use winit::platform::android::EventLoopBuilderExtAndroid;
 
     let _logger = logging::install();

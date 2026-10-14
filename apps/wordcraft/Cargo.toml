@@ -32,9 +32,9 @@ extract_native_libs = true
 
 [package.metadata.android.signing.release]
 path = "release.keystore"
-keystore_pass = "android"
+keystore_password = "android"
 key_alias = "wordcraft"
-key_pass = "android"
+key_password = "android"
 
 [dependencies]
 wordcraft-doc = { workspace = true }

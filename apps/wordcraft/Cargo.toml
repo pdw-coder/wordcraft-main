@@ -30,6 +30,12 @@ build_targets = ["aarch64-linux-android"]
 [package.metadata.android.application]
 extract_native_libs = true
 
+[package.metadata.android.signing.release]
+path = "release.keystore"
+keystore_pass = "android"
+key_alias = "wordcraft"
+key_pass = "android"
+
 [dependencies]
 wordcraft-doc = { workspace = true }
 wordcraft-engine = { workspace = true }

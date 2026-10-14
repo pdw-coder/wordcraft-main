@@ -62,6 +62,7 @@ jobs:
       - name: Build APK for MatePad 11.5
         run: |
           cd apps/wordcraft
+          keytool -genkey -v -keystore release.keystore -alias wordcraft -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=WordCraft, OU=WordCraft, O=WordCraft, L=Bangkok, S=Bangkok, C=TH"
           cargo apk build --release --target aarch64-linux-android
 
       - name: Upload APK Artifact

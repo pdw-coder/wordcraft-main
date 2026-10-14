@@ -233,6 +233,9 @@ fn build_sha() -> &'static str {
     option_env!("WORDCRAFT_BUILD_SHA").map(|s| s.get(..8).unwrap_or(s)).unwrap_or("dev")
 }
 
+#[cfg(target_os = "android")]
+fn main() {}
+
 #[cfg(not(target_os = "android"))]
 fn main() -> eframe::Result {
     // First, so the panic hook and every start-up warning are recorded (`logging`).

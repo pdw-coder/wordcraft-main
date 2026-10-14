@@ -28,15 +28,22 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Install Android NDK & Build Tools
         run: |
+          echo "ANDROID_SDK_ROOT=${ANDROID_HOME:-/usr/local/lib/android/sdk}" >> $GITHUB_ENV
+          export ANDROID_SDK_ROOT="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          export PATH="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH"
           yes | sdkmanager --licenses || true
-          sdkmanager --install "ndk;26.3.11579264" "build-tools;34.0.0" "platforms;android-34"
-          echo "ANDROID_NDK_HOME=${ANDROID_SDK_ROOT}/ndk/26.3.11579264" >> $GITHUB_ENV
-          echo "NDK_HOME=${ANDROID_SDK_ROOT}/ndk/26.3.11579264" >> $GITHUB_ENV
+          # Find existing NDK or install if not present
+          NDK_DIR=$(find $ANDROID_SDK_ROOT/ndk -maxdepth 1 -mindepth 1 -type d | sort -V | tail -n 1 || true)
+          if [ -z "$NDK_DIR" ]; then
+            sdkmanager --install "ndk;26.3.11579264" "build-tools;34.0.0" "platforms;android-34"
+            NDK_DIR="$ANDROID_SDK_ROOT/ndk/26.3.11579264"
+          fi
+          echo "Found/installed NDK at: $NDK_DIR"
+          echo "ANDROID_NDK_ROOT=$NDK_DIR" >> $GITHUB_ENV
+          echo "ANDROID_NDK_HOME=$NDK_DIR" >> $GITHUB_ENV
+          echo "NDK_HOME=$NDK_DIR" >> $GITHUB_ENV
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable

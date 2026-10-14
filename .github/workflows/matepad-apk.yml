@@ -34,10 +34,11 @@ jobs:
           export ANDROID_SDK_ROOT="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
           export PATH="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH"
           yes | sdkmanager --licenses || true
+          sdkmanager --install "platforms;android-30" "platforms;android-34" "build-tools;34.0.0"
           # Find existing NDK or install if not present
           NDK_DIR=$(find $ANDROID_SDK_ROOT/ndk -maxdepth 1 -mindepth 1 -type d | sort -V | tail -n 1 || true)
           if [ -z "$NDK_DIR" ]; then
-            sdkmanager --install "ndk;26.3.11579264" "build-tools;34.0.0" "platforms;android-34"
+            sdkmanager --install "ndk;26.3.11579264"
             NDK_DIR="$ANDROID_SDK_ROOT/ndk/26.3.11579264"
           fi
           echo "Found/installed NDK at: $NDK_DIR"

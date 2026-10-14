@@ -198,9 +198,8 @@ impl CanvasScroll {
                     }
                     lifted |= matches!(phase, TouchPhase::End | TouchPhase::Cancel);
                 }
-                Event::Touch { phase, delta, .. } => {
+                Event::Touch { phase, .. } => {
                     if hovered {
-                        touchpad += *delta;
                         lifted |= matches!(phase, TouchPhase::End | TouchPhase::Cancel);
                     }
                 }

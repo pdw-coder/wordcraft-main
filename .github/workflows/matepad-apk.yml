@@ -1,0 +1,66 @@
+name: Build MatePad 11.5 APK
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: matepad-apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-apk:
+    name: Build Android APK (Huawei MatePad 11.5 - aarch64)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android NDK & Build Tools
+        run: |
+          yes | sdkmanager --licenses || true
+          sdkmanager --install "ndk;26.3.11579264" "build-tools;34.0.0" "platforms;android-34"
+          echo "ANDROID_NDK_HOME=${ANDROID_SDK_ROOT}/ndk/26.3.11579264" >> $GITHUB_ENV
+          echo "NDK_HOME=${ANDROID_SDK_ROOT}/ndk/26.3.11579264" >> $GITHUB_ENV
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android
+
+      - name: Install cargo-apk
+        run: cargo install cargo-apk --locked
+
+      - name: Ensure Thai fonts are downloaded
+        run: |
+          chmod +x scripts/download_thai_fonts.sh
+          ./scripts/download_thai_fonts.sh
+
+      - name: Build APK for MatePad 11.5
+        run: |
+          cd apps/wordcraft
+          cargo apk build --release --target aarch64-linux-android
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Wordcraft-MatePad-11.5-ThaiGov-APK
+          path: |
+            target/release/apk/*.apk
+            apps/wordcraft/target/release/apk/*.apk
+          if-no-files-found: error
